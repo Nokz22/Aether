@@ -1,0 +1,19 @@
+/*
+ * Design tokens — the single source of truth for color, type, spacing,
+ * radius, elevation and motion (PROJECT_CONSTITUTION §5).
+ *
+ * Placeholder values only: the real scale arrives with the design
+ * direction chosen by the Product Owner. Components never hard-code
+ * these values — change the token, not the component.
+ */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
