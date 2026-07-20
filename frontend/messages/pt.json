@@ -22,5 +22,22 @@
       "network": "Sem ligação ao servidor. Tenta novamente.",
       "unknown": "Algo correu mal. Tenta novamente."
     }
+  },
+  "shell": {
+    "navigation": "Navegação principal",
+    "home": "Início",
+    "projects": "Projetos",
+    "calendar": "Calendário",
+    "habits": "Hábitos",
+    "finances": "Finanças",
+    "notes": "Notas",
+    "soon": "Em breve",
+    "logout": "Terminar sessão"
+  },
+  "dashboard": {
+    "greetingMorning": "Bom dia, {name}",
+    "greetingAfternoon": "Boa tarde, {name}",
+    "greetingEvening": "Boa noite, {name}",
+    "empty": "Os teus módulos vão viver aqui. Estamos a construir as fundações."
   }
 }

@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { LocaleSwitcher } from "@/features/auth/locale-switcher";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { LoginForm } from "@/features/auth/login-form";
 
 export default async function LoginPage() {
