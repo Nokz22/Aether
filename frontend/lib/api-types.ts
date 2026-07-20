@@ -203,6 +203,199 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/habits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the user's habits with today's state, streak and last 7 days */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The client's local date — the server never guesses timezones. */
+                    today: components["parameters"]["Today"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Habits ordered by creation. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["HabitResponse"][];
+                    };
+                };
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        /** Create a habit */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateHabitRequest"];
+                };
+            };
+            responses: {
+                /** @description Created. */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["HabitSummary"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/habits/{habitId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a habit and its history */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    habitId: components["parameters"]["HabitId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Rename a habit */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    habitId: components["parameters"]["HabitId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RenameHabitRequest"];
+                };
+            };
+            responses: {
+                /** @description Renamed. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        trace?: never;
+    };
+    "/api/habits/{habitId}/checkins/{date}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark the habit done on a day (idempotent; future days refused) */
+        put: {
+            parameters: {
+                query: {
+                    /** @description The client's local date — the server never guesses timezones. */
+                    today: components["parameters"]["Today"];
+                };
+                header?: never;
+                path: {
+                    habitId: components["parameters"]["HabitId"];
+                    date: components["parameters"]["CheckinDate"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Marked. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                400: components["responses"]["ApiError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        post?: never;
+        /** Unmark the habit on a day (idempotent) */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    habitId: components["parameters"]["HabitId"];
+                    date: components["parameters"]["CheckinDate"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Unmarked. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -228,6 +421,31 @@ export interface components {
             /** Format: email */
             email: string;
             displayName: string;
+        };
+        CreateHabitRequest: {
+            name: string;
+        };
+        RenameHabitRequest: {
+            name: string;
+        };
+        HabitSummary: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        HabitDay: {
+            /** Format: date */
+            date: string;
+            done: boolean;
+        };
+        HabitResponse: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            doneToday: boolean;
+            currentStreak: number;
+            /** @description The last 7 days, oldest first, ending today. */
+            week: components["schemas"]["HabitDay"][];
         };
         ApiError: {
             /** @description Stable machine-readable code, e.g. invalid_credentials, registration_closed, email_already_used, invalid_refresh_token, validation_failed. */
@@ -259,7 +477,12 @@ export interface components {
             };
         };
     };
-    parameters: never;
+    parameters: {
+        /** @description The client's local date — the server never guesses timezones. */
+        Today: string;
+        HabitId: string;
+        CheckinDate: string;
+    };
     requestBodies: never;
     headers: {
         /** @description `aether_refresh` — httpOnly, Secure, SameSite=Strict, path=/api/auth. Never readable by frontend code. */

@@ -32,6 +32,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return response.status === 204 ? (undefined as T) : ((await response.json()) as T);
 }
 
+export type HabitResponse = components["schemas"]["HabitResponse"];
+export type HabitDay = components["schemas"]["HabitDay"];
+export type HabitSummary = components["schemas"]["HabitSummary"];
+
+function bearer(accessToken: string): Record<string, string> {
+  return { Authorization: `Bearer ${accessToken}` };
+}
+
 export const authApi = {
   register(body: RegisterRequest): Promise<TokenResponse> {
     return request("/api/auth/register", { method: "POST", body: JSON.stringify(body) });
@@ -46,8 +54,31 @@ export const authApi = {
     return request("/api/auth/logout", { method: "POST" });
   },
   me(accessToken: string): Promise<UserResponse> {
-    return request("/api/auth/me", {
-      headers: { Authorization: `Bearer ${accessToken}` },
+    return request("/api/auth/me", { headers: bearer(accessToken) });
+  },
+};
+
+export const habitsApi = {
+  list(today: string, accessToken: string): Promise<HabitResponse[]> {
+    return request(`/api/habits?today=${today}`, { headers: bearer(accessToken) });
+  },
+  create(name: string, accessToken: string): Promise<HabitSummary> {
+    return request("/api/habits", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+      headers: bearer(accessToken),
+    });
+  },
+  checkIn(habitId: string, date: string, today: string, accessToken: string): Promise<void> {
+    return request(`/api/habits/${habitId}/checkins/${date}?today=${today}`, {
+      method: "PUT",
+      headers: bearer(accessToken),
+    });
+  },
+  removeCheckin(habitId: string, date: string, accessToken: string): Promise<void> {
+    return request(`/api/habits/${habitId}/checkins/${date}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
     });
   },
 };
