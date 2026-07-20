@@ -1,1 +1,26 @@
-{}
+{
+  "app": {
+    "name": "AETHER",
+    "tagline": "Your personal operating system."
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Name",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create account",
+    "submitting": "One moment…",
+    "switchToRegister": "First time here? Create an account",
+    "switchToLogin": "Already have an account? Sign in",
+    "errors": {
+      "invalid_credentials": "Invalid email or password.",
+      "registration_closed": "Registration is closed.",
+      "email_already_used": "An account with this email already exists.",
+      "validation_failed": "Check the details you entered.",
+      "network": "Can't reach the server. Try again.",
+      "unknown": "Something went wrong. Try again."
+    }
+  }
+}
