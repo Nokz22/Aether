@@ -49,6 +49,11 @@
     "retry": "Tentar novamente",
     "markDone": "Marcar {name} como feito hoje",
     "markUndone": "Desmarcar {name} de hoje",
-    "streak": "Sequência de {count} dias"
+    "streak": "Sequência de {count} dias",
+    "delete": "Apagar {name}",
+    "renameLabel": "Renomear {name}",
+    "confirmDelete": "Apagar?",
+    "confirmYes": "Sim",
+    "confirmNo": "Não"
   }
 }

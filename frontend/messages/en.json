@@ -49,6 +49,11 @@
     "retry": "Try again",
     "markDone": "Mark {name} as done today",
     "markUndone": "Unmark {name} for today",
-    "streak": "{count}-day streak"
+    "streak": "{count}-day streak",
+    "delete": "Delete {name}",
+    "renameLabel": "Rename {name}",
+    "confirmDelete": "Delete?",
+    "confirmYes": "Yes",
+    "confirmNo": "No"
   }
 }

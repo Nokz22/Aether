@@ -81,4 +81,17 @@ export const habitsApi = {
       headers: bearer(accessToken),
     });
   },
+  rename(habitId: string, name: string, accessToken: string): Promise<void> {
+    return request(`/api/habits/${habitId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ name }),
+      headers: bearer(accessToken),
+    });
+  },
+  remove(habitId: string, accessToken: string): Promise<void> {
+    return request(`/api/habits/${habitId}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
+    });
+  },
 };

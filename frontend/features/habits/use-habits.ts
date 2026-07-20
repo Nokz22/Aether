@@ -30,5 +30,16 @@ export function useHabits() {
     onSuccess: invalidate,
   });
 
-  return { habits, create, toggleToday };
+  const rename = useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) =>
+      habitsApi.rename(id, name, accessToken),
+    onSuccess: invalidate,
+  });
+
+  const remove = useMutation({
+    mutationFn: (id: string) => habitsApi.remove(id, accessToken),
+    onSuccess: invalidate,
+  });
+
+  return { habits, create, toggleToday, rename, remove };
 }
