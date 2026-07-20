@@ -22,5 +22,22 @@
       "network": "Can't reach the server. Try again.",
       "unknown": "Something went wrong. Try again."
     }
+  },
+  "shell": {
+    "navigation": "Main navigation",
+    "home": "Home",
+    "projects": "Projects",
+    "calendar": "Calendar",
+    "habits": "Habits",
+    "finances": "Finances",
+    "notes": "Notes",
+    "soon": "Coming soon",
+    "logout": "Sign out"
+  },
+  "dashboard": {
+    "greetingMorning": "Good morning, {name}",
+    "greetingAfternoon": "Good afternoon, {name}",
+    "greetingEvening": "Good evening, {name}",
+    "empty": "Your modules will live here. We are building the foundations."
   }
 }
