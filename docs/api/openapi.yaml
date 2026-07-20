@@ -11,6 +11,7 @@ servers:
 
 tags:
   - name: auth
+  - name: habits
 
 paths:
   /api/auth/register:
@@ -91,7 +92,115 @@ paths:
           description: Current user.
         "401": { $ref: "#/components/responses/ApiError" }
 
+  /api/habits:
+    get:
+      tags: [habits]
+      summary: List the user's habits with today's state, streak and last 7 days
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Today"
+      responses:
+        "200":
+          description: Habits ordered by creation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/HabitResponse" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    post:
+      tags: [habits]
+      summary: Create a habit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateHabitRequest" }
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HabitSummary" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+
+  /api/habits/{habitId}:
+    patch:
+      tags: [habits]
+      summary: Rename a habit
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/HabitId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RenameHabitRequest" }
+      responses:
+        "204": { description: Renamed. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [habits]
+      summary: Delete a habit and its history
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/HabitId"
+      responses:
+        "204": { description: Deleted. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
+  /api/habits/{habitId}/checkins/{date}:
+    put:
+      tags: [habits]
+      summary: Mark the habit done on a day (idempotent; future days refused)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/HabitId"
+        - $ref: "#/components/parameters/CheckinDate"
+        - $ref: "#/components/parameters/Today"
+      responses:
+        "204": { description: Marked. }
+        "400": { $ref: "#/components/responses/ApiError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [habits]
+      summary: Unmark the habit on a day (idempotent)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/HabitId"
+        - $ref: "#/components/parameters/CheckinDate"
+      responses:
+        "204": { description: Unmarked. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
 components:
+  parameters:
+    Today:
+      name: today
+      in: query
+      required: true
+      description: The client's local date — the server never guesses timezones.
+      schema: { type: string, format: date }
+    HabitId:
+      name: habitId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    CheckinDate:
+      name: date
+      in: path
+      required: true
+      schema: { type: string, format: date }
+
   securitySchemes:
     bearerAuth:
       type: http
@@ -149,6 +258,45 @@ components:
         id: { type: string, format: uuid }
         email: { type: string, format: email }
         displayName: { type: string }
+
+    CreateHabitRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, maxLength: 100 }
+
+    RenameHabitRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, maxLength: 100 }
+
+    HabitSummary:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+
+    HabitDay:
+      type: object
+      required: [date, done]
+      properties:
+        date: { type: string, format: date }
+        done: { type: boolean }
+
+    HabitResponse:
+      type: object
+      required: [id, name, doneToday, currentStreak, week]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        doneToday: { type: boolean }
+        currentStreak: { type: integer, minimum: 0 }
+        week:
+          type: array
+          description: The last 7 days, oldest first, ending today.
+          items: { $ref: "#/components/schemas/HabitDay" }
 
     ApiError:
       type: object
