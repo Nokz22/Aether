@@ -17,7 +17,7 @@ const MODULES = [
   { key: "home", href: "/", Icon: HomeIcon },
   { key: "projects", href: null, Icon: FolderIcon },
   { key: "calendar", href: null, Icon: CalendarIcon },
-  { key: "habits", href: null, Icon: RepeatIcon },
+  { key: "habits", href: "/habits", Icon: RepeatIcon },
   { key: "finances", href: null, Icon: WalletIcon },
   { key: "notes", href: null, Icon: NoteIcon },
 ] as const;

@@ -79,10 +79,36 @@ body {
   }
 }
 
+/* Habit check circle: quiet outline that fills with a small pop when done. */
+.check-circle {
+  border: 1.5px solid var(--muted);
+  background: transparent;
+  transition:
+    background var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.check-circle:hover {
+  border-color: var(--accent);
+}
+
+.check-circle[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  animation: check-pop var(--duration-fast) var(--ease);
+}
+
+@keyframes check-pop {
+  50% {
+    transform: scale(1.18);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aurora::before,
   .aurora::after,
-  .glass-card {
+  .glass-card,
+  .check-circle[aria-pressed="true"] {
     animation: none;
   }
 }

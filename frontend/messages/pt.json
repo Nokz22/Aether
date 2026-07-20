@@ -39,5 +39,16 @@
     "greetingAfternoon": "Boa tarde, {name}",
     "greetingEvening": "Boa noite, {name}",
     "empty": "Os teus módulos vão viver aqui. Estamos a construir as fundações."
+  },
+  "habits": {
+    "title": "Hábitos",
+    "newPlaceholder": "Novo hábito…",
+    "empty": "Ainda não tens hábitos. Escreve o primeiro aqui em baixo.",
+    "loadError": "Não foi possível carregar os hábitos.",
+    "actionError": "Não foi possível guardar. Tenta novamente.",
+    "retry": "Tentar novamente",
+    "markDone": "Marcar {name} como feito hoje",
+    "markUndone": "Desmarcar {name} de hoje",
+    "streak": "Sequência de {count} dias"
   }
 }

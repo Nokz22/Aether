@@ -39,5 +39,16 @@
     "greetingAfternoon": "Good afternoon, {name}",
     "greetingEvening": "Good evening, {name}",
     "empty": "Your modules will live here. We are building the foundations."
+  },
+  "habits": {
+    "title": "Habits",
+    "newPlaceholder": "New habit…",
+    "empty": "No habits yet. Type your first one below.",
+    "loadError": "Couldn't load your habits.",
+    "actionError": "Couldn't save. Try again.",
+    "retry": "Try again",
+    "markDone": "Mark {name} as done today",
+    "markUndone": "Unmark {name} for today",
+    "streak": "{count}-day streak"
   }
 }
