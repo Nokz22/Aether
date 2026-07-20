@@ -8,7 +8,7 @@ import { useHabits } from "./use-habits";
 
 export function HabitsList() {
   const t = useTranslations("habits");
-  const { habits, create, toggleToday } = useHabits();
+  const { habits, create, toggleToday, rename, remove } = useHabits();
 
   if (habits.isPending) {
     return (
@@ -44,7 +44,9 @@ export function HabitsList() {
               key={habit.id}
               habit={habit}
               onToggle={(target) => toggleToday.mutate(target)}
-              toggling={toggleToday.isPending}
+              onRename={(id, name) => rename.mutate({ id, name })}
+              onDelete={(id) => remove.mutate(id)}
+              busy={toggleToday.isPending || rename.isPending || remove.isPending}
             />
           ))}
         </ul>
@@ -52,7 +54,7 @@ export function HabitsList() {
 
       <NewHabitForm onCreate={(name) => create.mutate(name)} creating={create.isPending} />
 
-      {(create.isError || toggleToday.isError) && (
+      {(create.isError || toggleToday.isError || rename.isError || remove.isError) && (
         <p role="alert" className="text-sm text-danger">
           {t("actionError")}
         </p>
