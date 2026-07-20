@@ -1,5 +1,7 @@
 # AETHER
 
+[![CI](https://github.com/Nokz22/Aether/actions/workflows/ci.yml/badge.svg)](https://github.com/Nokz22/Aether/actions/workflows/ci.yml)
+
 A personal **AI Operating System** — a single, calm, premium interface to run your life: projects, calendar, habits, finances, notes, and a personal AI layer that ties them together.
 
 > *The foundation matters more than the feature.*
