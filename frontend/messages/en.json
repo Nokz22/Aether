@@ -38,7 +38,15 @@
     "greetingMorning": "Good morning, {name}",
     "greetingAfternoon": "Good afternoon, {name}",
     "greetingEvening": "Good evening, {name}",
-    "empty": "Your modules will live here. We are building the foundations."
+    "todayTitle": "Today",
+    "progress": "{done} of {total} done",
+    "allDone": "All done for today",
+    "viewHabits": "View habits",
+    "todayEmpty": "No habits yet.",
+    "createHabit": "Create a habit",
+    "loadError": "Couldn't load.",
+    "retry": "Try again",
+    "actionError": "Couldn't save. Try again."
   },
   "habits": {
     "title": "Habits",
