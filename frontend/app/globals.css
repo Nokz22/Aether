@@ -61,6 +61,13 @@ body {
   }
 }
 
+/* Calm surface for content cards — a subtle lift, no blur (glass stays sparing). */
+.surface-card {
+  background: var(--surface-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+}
+
 /* The one sanctioned use of glass: the auth card. */
 .glass-card {
   background: var(--surface-glass);

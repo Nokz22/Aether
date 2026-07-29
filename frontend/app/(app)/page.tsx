@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useSession } from "@/features/auth/session-provider";
+import { TodayHabits } from "@/features/dashboard/today-habits";
 
 function greetingKey(hour: number): "greetingMorning" | "greetingAfternoon" | "greetingEvening" {
   if (hour >= 6 && hour < 13) return "greetingMorning";
@@ -14,11 +15,11 @@ export default function DashboardPage() {
   const { user } = useSession();
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col gap-8">
       <h1 className="text-2xl font-medium tracking-tight">
         {t(greetingKey(new Date().getHours()), { name: user.displayName })}
       </h1>
-      <p className="mt-2 text-muted">{t("empty")}</p>
+      <TodayHabits />
     </div>
   );
 }

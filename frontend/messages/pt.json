@@ -38,7 +38,15 @@
     "greetingMorning": "Bom dia, {name}",
     "greetingAfternoon": "Boa tarde, {name}",
     "greetingEvening": "Boa noite, {name}",
-    "empty": "Os teus módulos vão viver aqui. Estamos a construir as fundações."
+    "todayTitle": "Hoje",
+    "progress": "{done} de {total} feitos",
+    "allDone": "Tudo feito por hoje",
+    "viewHabits": "Ver hábitos",
+    "todayEmpty": "Ainda não tens hábitos.",
+    "createHabit": "Criar um hábito",
+    "loadError": "Não foi possível carregar.",
+    "retry": "Tentar novamente",
+    "actionError": "Não foi possível guardar. Tenta novamente."
   },
   "habits": {
     "title": "Hábitos",
