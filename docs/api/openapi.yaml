@@ -12,6 +12,7 @@ servers:
 tags:
   - name: auth
   - name: habits
+  - name: notes
 
 paths:
   /api/auth/register:
@@ -182,8 +183,93 @@ paths:
         "204": { description: Unmarked. }
         "404": { $ref: "#/components/responses/ApiError" }
 
+  /api/notes:
+    get:
+      tags: [notes]
+      summary: List the user's notes, most recently edited first
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Note summaries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/NoteSummary" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    post:
+      tags: [notes]
+      summary: Create a note
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateNoteRequest" }
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NoteResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+
+  /api/notes/{noteId}:
+    get:
+      tags: [notes]
+      summary: Get a note in full
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/NoteId"
+      responses:
+        "200":
+          description: The note.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NoteResponse" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    patch:
+      tags: [notes]
+      summary: Update a note (partial; omitted fields are left unchanged)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/NoteId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateNoteRequest" }
+      responses:
+        "200":
+          description: The updated note.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NoteResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [notes]
+      summary: Delete a note
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/NoteId"
+      responses:
+        "204": { description: Deleted. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
 components:
   parameters:
+    NoteId:
+      name: noteId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
     Today:
       name: today
       in: query
@@ -297,6 +383,41 @@ components:
           type: array
           description: The last 7 days, oldest first, ending today.
           items: { $ref: "#/components/schemas/HabitDay" }
+
+    CreateNoteRequest:
+      type: object
+      required: [content]
+      properties:
+        title: { type: string, maxLength: 200 }
+        content: { type: string, minLength: 1, maxLength: 50000 }
+
+    UpdateNoteRequest:
+      type: object
+      description: Partial update — omit a field to leave it unchanged.
+      properties:
+        title: { type: string, maxLength: 200 }
+        content: { type: string, maxLength: 50000 }
+
+    NoteSummary:
+      type: object
+      required: [id, title, preview, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        preview:
+          type: string
+          description: First non-blank line of the content, capped — a label for titleless notes.
+        updatedAt: { type: string, format: date-time }
+
+    NoteResponse:
+      type: object
+      required: [id, title, content, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        content: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     ApiError:
       type: object

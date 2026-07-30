@@ -396,6 +396,157 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the user's notes, most recently edited first */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Note summaries. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NoteSummary"][];
+                    };
+                };
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        /** Create a note */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateNoteRequest"];
+                };
+            };
+            responses: {
+                /** @description Created. */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NoteResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notes/{noteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a note in full */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    noteId: components["parameters"]["NoteId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The note. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NoteResponse"];
+                    };
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete a note */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    noteId: components["parameters"]["NoteId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update a note (partial; omitted fields are left unchanged) */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    noteId: components["parameters"]["NoteId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateNoteRequest"];
+                };
+            };
+            responses: {
+                /** @description The updated note. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NoteResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -447,6 +598,34 @@ export interface components {
             /** @description The last 7 days, oldest first, ending today. */
             week: components["schemas"]["HabitDay"][];
         };
+        CreateNoteRequest: {
+            title?: string;
+            content: string;
+        };
+        /** @description Partial update — omit a field to leave it unchanged. */
+        UpdateNoteRequest: {
+            title?: string;
+            content?: string;
+        };
+        NoteSummary: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description First non-blank line of the content, capped — a label for titleless notes. */
+            preview: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        NoteResponse: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            content: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         ApiError: {
             /** @description Stable machine-readable code, e.g. invalid_credentials, registration_closed, email_already_used, invalid_refresh_token, validation_failed. */
             code: string;
@@ -478,6 +657,7 @@ export interface components {
         };
     };
     parameters: {
+        NoteId: string;
         /** @description The client's local date — the server never guesses timezones. */
         Today: string;
         HabitId: string;
