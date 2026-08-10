@@ -63,5 +63,26 @@
     "confirmDelete": "Delete?",
     "confirmYes": "Yes",
     "confirmNo": "No"
+  },
+  "notes": {
+    "title": "Notes",
+    "newNote": "New note",
+    "empty": "No notes yet.",
+    "untitled": "Untitled",
+    "noSelection": "Pick a note or create a new one.",
+    "listError": "Couldn't load your notes.",
+    "loadError": "Couldn't load the note.",
+    "retry": "Try again",
+    "back": "Back",
+    "titlePlaceholder": "Title",
+    "titleLabel": "Note title",
+    "contentPlaceholder": "Write here…",
+    "contentLabel": "Note content",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "delete": "Delete note",
+    "confirmDelete": "Delete?",
+    "confirmYes": "Yes",
+    "confirmNo": "No"
   }
 }

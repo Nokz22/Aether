@@ -63,5 +63,26 @@
     "confirmDelete": "Apagar?",
     "confirmYes": "Sim",
     "confirmNo": "Não"
+  },
+  "notes": {
+    "title": "Notas",
+    "newNote": "Nova nota",
+    "empty": "Ainda não tens notas.",
+    "untitled": "Sem título",
+    "noSelection": "Escolhe uma nota ou cria uma nova.",
+    "listError": "Não foi possível carregar as notas.",
+    "loadError": "Não foi possível carregar a nota.",
+    "retry": "Tentar novamente",
+    "back": "Voltar",
+    "titlePlaceholder": "Título",
+    "titleLabel": "Título da nota",
+    "contentPlaceholder": "Escreve aqui…",
+    "contentLabel": "Conteúdo da nota",
+    "saving": "A guardar…",
+    "saved": "Guardado",
+    "delete": "Apagar nota",
+    "confirmDelete": "Apagar?",
+    "confirmYes": "Sim",
+    "confirmNo": "Não"
   }
 }
