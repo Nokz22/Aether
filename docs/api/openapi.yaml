@@ -13,6 +13,7 @@ tags:
   - name: auth
   - name: habits
   - name: notes
+  - name: projects
 
 paths:
   /api/auth/register:
@@ -263,8 +264,154 @@ paths:
         "204": { description: Deleted. }
         "404": { $ref: "#/components/responses/ApiError" }
 
+  /api/projects:
+    get:
+      tags: [projects]
+      summary: List the user's projects with task counts per state
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Project summaries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ProjectSummary" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    post:
+      tags: [projects]
+      summary: Create a project
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateProjectRequest" }
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProjectResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+
+  /api/projects/{projectId}:
+    get:
+      tags: [projects]
+      summary: Get a project with its tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      responses:
+        "200":
+          description: The project.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProjectResponse" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    patch:
+      tags: [projects]
+      summary: Update a project (partial; omitted fields are left unchanged)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateProjectRequest" }
+      responses:
+        "200":
+          description: The updated project.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProjectResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [projects]
+      summary: Delete a project and its tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      responses:
+        "204": { description: Deleted. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
+  /api/projects/{projectId}/tasks:
+    post:
+      tags: [projects]
+      summary: Add a task to a project (starts as TODO)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateTaskRequest" }
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TaskResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+
+  /api/projects/{projectId}/tasks/{taskId}:
+    patch:
+      tags: [projects]
+      summary: Update a task's title or status (partial)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateTaskRequest" }
+      responses:
+        "200":
+          description: The updated task.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TaskResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [projects]
+      summary: Delete a task
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+        - $ref: "#/components/parameters/TaskId"
+      responses:
+        "204": { description: Deleted. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
 components:
   parameters:
+    ProjectId:
+      name: projectId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
     NoteId:
       name: noteId
       in: path
@@ -418,6 +565,77 @@ components:
         content: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+
+    TaskStatus:
+      type: string
+      enum: [TODO, DOING, DONE]
+
+    CreateProjectRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, maxLength: 2000 }
+
+    UpdateProjectRequest:
+      type: object
+      description: Partial update — omit a field to leave it unchanged.
+      properties:
+        name: { type: string, maxLength: 200 }
+        description: { type: string, maxLength: 2000 }
+
+    CreateTaskRequest:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 300 }
+
+    UpdateTaskRequest:
+      type: object
+      description: Partial update — omit a field to leave it unchanged.
+      properties:
+        title: { type: string, maxLength: 300 }
+        status: { $ref: "#/components/schemas/TaskStatus" }
+
+    TaskResponse:
+      type: object
+      required: [id, title, status, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        status: { $ref: "#/components/schemas/TaskStatus" }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    TaskCounts:
+      type: object
+      required: [todo, doing, done]
+      properties:
+        todo: { type: integer, minimum: 0 }
+        doing: { type: integer, minimum: 0 }
+        done: { type: integer, minimum: 0 }
+
+    ProjectSummary:
+      type: object
+      required: [id, name, taskCounts, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        taskCounts: { $ref: "#/components/schemas/TaskCounts" }
+        updatedAt: { type: string, format: date-time }
+
+    ProjectResponse:
+      type: object
+      required: [id, name, description, createdAt, updatedAt, tasks]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        description: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        tasks:
+          type: array
+          items: { $ref: "#/components/schemas/TaskResponse" }
 
     ApiError:
       type: object

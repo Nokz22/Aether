@@ -547,6 +547,268 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the user's projects with task counts per state */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Project summaries. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProjectSummary"][];
+                    };
+                };
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        /** Create a project */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateProjectRequest"];
+                };
+            };
+            responses: {
+                /** @description Created. */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProjectResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a project with its tasks */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: components["parameters"]["ProjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The project. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProjectResponse"];
+                    };
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete a project and its tasks */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: components["parameters"]["ProjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update a project (partial; omitted fields are left unchanged) */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: components["parameters"]["ProjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateProjectRequest"];
+                };
+            };
+            responses: {
+                /** @description The updated project. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProjectResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        trace?: never;
+    };
+    "/api/projects/{projectId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a task to a project (starts as TODO) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: components["parameters"]["ProjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateTaskRequest"];
+                };
+            };
+            responses: {
+                /** @description Created. */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TaskResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{projectId}/tasks/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a task */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: components["parameters"]["ProjectId"];
+                    taskId: components["parameters"]["TaskId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update a task's title or status (partial) */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: components["parameters"]["ProjectId"];
+                    taskId: components["parameters"]["TaskId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateTaskRequest"];
+                };
+            };
+            responses: {
+                /** @description The updated task. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TaskResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -626,6 +888,59 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        /** @enum {string} */
+        TaskStatus: "TODO" | "DOING" | "DONE";
+        CreateProjectRequest: {
+            name: string;
+            description?: string;
+        };
+        /** @description Partial update — omit a field to leave it unchanged. */
+        UpdateProjectRequest: {
+            name?: string;
+            description?: string;
+        };
+        CreateTaskRequest: {
+            title: string;
+        };
+        /** @description Partial update — omit a field to leave it unchanged. */
+        UpdateTaskRequest: {
+            title?: string;
+            status?: components["schemas"]["TaskStatus"];
+        };
+        TaskResponse: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            status: components["schemas"]["TaskStatus"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        TaskCounts: {
+            todo: number;
+            doing: number;
+            done: number;
+        };
+        ProjectSummary: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taskCounts: components["schemas"]["TaskCounts"];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ProjectResponse: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            description: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            tasks: components["schemas"]["TaskResponse"][];
+        };
         ApiError: {
             /** @description Stable machine-readable code, e.g. invalid_credentials, registration_closed, email_already_used, invalid_refresh_token, validation_failed. */
             code: string;
@@ -657,6 +972,8 @@ export interface components {
         };
     };
     parameters: {
+        ProjectId: string;
+        TaskId: string;
         NoteId: string;
         /** @description The client's local date — the server never guesses timezones. */
         Today: string;
