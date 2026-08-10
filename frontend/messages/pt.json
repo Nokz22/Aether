@@ -84,5 +84,35 @@
     "confirmDelete": "Apagar?",
     "confirmYes": "Sim",
     "confirmNo": "Não"
+  },
+  "projects": {
+    "title": "Projetos",
+    "empty": "Ainda não tens projetos.",
+    "newProject": "Novo projeto…",
+    "newTask": "Nova tarefa…",
+    "listError": "Não foi possível carregar os projetos.",
+    "loadError": "Não foi possível carregar o projeto.",
+    "actionError": "Não foi possível guardar. Tenta novamente.",
+    "retry": "Tentar novamente",
+    "back": "Voltar",
+    "noSelection": "Escolhe um projeto ou cria um novo.",
+    "progress": "{done}/{total} feitas",
+    "projectName": "Nome do projeto",
+    "projectDescription": "Descrição do projeto",
+    "descriptionPlaceholder": "Descrição (opcional)",
+    "deleteProject": "Apagar projeto",
+    "confirmDeleteProject": "Apagar projeto e tarefas?",
+    "moveLeft": "Mover para o estado anterior",
+    "moveRight": "Mover para o estado seguinte",
+    "renameTask": "Renomear tarefa {title}",
+    "deleteTask": "Apagar tarefa {title}",
+    "confirmDelete": "Apagar?",
+    "confirmYes": "Sim",
+    "confirmNo": "Não",
+    "status": {
+      "todo": "A fazer",
+      "doing": "Em curso",
+      "done": "Feito"
+    }
   }
 }

@@ -15,7 +15,7 @@ import {
 
 const MODULES = [
   { key: "home", href: "/", Icon: HomeIcon },
-  { key: "projects", href: null, Icon: FolderIcon },
+  { key: "projects", href: "/projects", Icon: FolderIcon },
   { key: "calendar", href: null, Icon: CalendarIcon },
   { key: "habits", href: "/habits", Icon: RepeatIcon },
   { key: "finances", href: null, Icon: WalletIcon },

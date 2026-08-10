@@ -41,6 +41,13 @@ export type NoteResponse = components["schemas"]["NoteResponse"];
 export type CreateNoteRequest = components["schemas"]["CreateNoteRequest"];
 export type UpdateNoteRequest = components["schemas"]["UpdateNoteRequest"];
 
+export type ProjectSummary = components["schemas"]["ProjectSummary"];
+export type ProjectResponse = components["schemas"]["ProjectResponse"];
+export type TaskResponse = components["schemas"]["TaskResponse"];
+export type TaskStatus = components["schemas"]["TaskStatus"];
+export type UpdateProjectRequest = components["schemas"]["UpdateProjectRequest"];
+export type UpdateTaskRequest = components["schemas"]["UpdateTaskRequest"];
+
 function bearer(accessToken: string): Record<string, string> {
   return { Authorization: `Bearer ${accessToken}` };
 }
@@ -124,6 +131,60 @@ export const notesApi = {
   },
   remove(noteId: string, accessToken: string): Promise<void> {
     return request(`/api/notes/${noteId}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
+    });
+  },
+};
+
+export const projectsApi = {
+  list(accessToken: string): Promise<ProjectSummary[]> {
+    return request("/api/projects", { headers: bearer(accessToken) });
+  },
+  get(projectId: string, accessToken: string): Promise<ProjectResponse> {
+    return request(`/api/projects/${projectId}`, { headers: bearer(accessToken) });
+  },
+  create(name: string, accessToken: string): Promise<ProjectResponse> {
+    return request("/api/projects", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+      headers: bearer(accessToken),
+    });
+  },
+  update(projectId: string, body: UpdateProjectRequest, accessToken: string): Promise<ProjectResponse> {
+    return request(`/api/projects/${projectId}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  remove(projectId: string, accessToken: string): Promise<void> {
+    return request(`/api/projects/${projectId}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
+    });
+  },
+  addTask(projectId: string, title: string, accessToken: string): Promise<TaskResponse> {
+    return request(`/api/projects/${projectId}/tasks`, {
+      method: "POST",
+      body: JSON.stringify({ title }),
+      headers: bearer(accessToken),
+    });
+  },
+  updateTask(
+    projectId: string,
+    taskId: string,
+    body: UpdateTaskRequest,
+    accessToken: string,
+  ): Promise<TaskResponse> {
+    return request(`/api/projects/${projectId}/tasks/${taskId}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  removeTask(projectId: string, taskId: string, accessToken: string): Promise<void> {
+    return request(`/api/projects/${projectId}/tasks/${taskId}`, {
       method: "DELETE",
       headers: bearer(accessToken),
     });

@@ -84,5 +84,35 @@
     "confirmDelete": "Delete?",
     "confirmYes": "Yes",
     "confirmNo": "No"
+  },
+  "projects": {
+    "title": "Projects",
+    "empty": "No projects yet.",
+    "newProject": "New project…",
+    "newTask": "New task…",
+    "listError": "Couldn't load your projects.",
+    "loadError": "Couldn't load the project.",
+    "actionError": "Couldn't save. Try again.",
+    "retry": "Try again",
+    "back": "Back",
+    "noSelection": "Pick a project or create a new one.",
+    "progress": "{done}/{total} done",
+    "projectName": "Project name",
+    "projectDescription": "Project description",
+    "descriptionPlaceholder": "Description (optional)",
+    "deleteProject": "Delete project",
+    "confirmDeleteProject": "Delete project and tasks?",
+    "moveLeft": "Move to previous state",
+    "moveRight": "Move to next state",
+    "renameTask": "Rename task {title}",
+    "deleteTask": "Delete task {title}",
+    "confirmDelete": "Delete?",
+    "confirmYes": "Yes",
+    "confirmNo": "No",
+    "status": {
+      "todo": "To do",
+      "doing": "Doing",
+      "done": "Done"
+    }
   }
 }
