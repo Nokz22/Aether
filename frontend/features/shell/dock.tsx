@@ -19,7 +19,7 @@ const MODULES = [
   { key: "calendar", href: null, Icon: CalendarIcon },
   { key: "habits", href: "/habits", Icon: RepeatIcon },
   { key: "finances", href: null, Icon: WalletIcon },
-  { key: "notes", href: null, Icon: NoteIcon },
+  { key: "notes", href: "/notes", Icon: NoteIcon },
 ] as const;
 
 export function Dock() {

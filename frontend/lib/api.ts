@@ -36,6 +36,11 @@ export type HabitResponse = components["schemas"]["HabitResponse"];
 export type HabitDay = components["schemas"]["HabitDay"];
 export type HabitSummary = components["schemas"]["HabitSummary"];
 
+export type NoteSummary = components["schemas"]["NoteSummary"];
+export type NoteResponse = components["schemas"]["NoteResponse"];
+export type CreateNoteRequest = components["schemas"]["CreateNoteRequest"];
+export type UpdateNoteRequest = components["schemas"]["UpdateNoteRequest"];
+
 function bearer(accessToken: string): Record<string, string> {
   return { Authorization: `Bearer ${accessToken}` };
 }
@@ -90,6 +95,35 @@ export const habitsApi = {
   },
   remove(habitId: string, accessToken: string): Promise<void> {
     return request(`/api/habits/${habitId}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
+    });
+  },
+};
+
+export const notesApi = {
+  list(accessToken: string): Promise<NoteSummary[]> {
+    return request("/api/notes", { headers: bearer(accessToken) });
+  },
+  get(noteId: string, accessToken: string): Promise<NoteResponse> {
+    return request(`/api/notes/${noteId}`, { headers: bearer(accessToken) });
+  },
+  create(body: CreateNoteRequest, accessToken: string): Promise<NoteResponse> {
+    return request("/api/notes", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  update(noteId: string, body: UpdateNoteRequest, accessToken: string): Promise<NoteResponse> {
+    return request(`/api/notes/${noteId}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  remove(noteId: string, accessToken: string): Promise<void> {
+    return request(`/api/notes/${noteId}`, {
       method: "DELETE",
       headers: bearer(accessToken),
     });
