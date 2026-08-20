@@ -14,6 +14,7 @@ tags:
   - name: habits
   - name: notes
   - name: projects
+  - name: calendar
 
 paths:
   /api/auth/register:
@@ -400,8 +401,95 @@ paths:
         "204": { description: Deleted. }
         "404": { $ref: "#/components/responses/ApiError" }
 
+  /api/events:
+    get:
+      tags: [calendar]
+      summary: List events overlapping a time window
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RangeFrom"
+        - $ref: "#/components/parameters/RangeTo"
+      responses:
+        "200":
+          description: Events overlapping [from, to), earliest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/EventResponse" }
+        "400": { $ref: "#/components/responses/ApiError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    post:
+      tags: [calendar]
+      summary: Create an event
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateEventRequest" }
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EventResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+
+  /api/events/{eventId}:
+    patch:
+      tags: [calendar]
+      summary: Update an event (partial; omitted fields are left unchanged)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateEventRequest" }
+      responses:
+        "200":
+          description: The updated event.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EventResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [calendar]
+      summary: Delete an event
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "204": { description: Deleted. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
 components:
   parameters:
+    RangeFrom:
+      name: from
+      in: query
+      required: true
+      description: Window start as an instant (ISO-8601, e.g. 2026-08-20T00:00:00Z).
+      schema: { type: string, format: date-time }
+    RangeTo:
+      name: to
+      in: query
+      required: true
+      description: Window end as an instant (ISO-8601). Must be after `from`.
+      schema: { type: string, format: date-time }
+    EventId:
+      name: eventId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
     ProjectId:
       name: projectId
       in: path
@@ -636,6 +724,36 @@ components:
         tasks:
           type: array
           items: { $ref: "#/components/schemas/TaskResponse" }
+
+    CreateEventRequest:
+      type: object
+      required: [title, startsAt, endsAt]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 300 }
+        description: { type: string, maxLength: 2000 }
+        startsAt: { type: string, format: date-time }
+        endsAt: { type: string, format: date-time }
+
+    UpdateEventRequest:
+      type: object
+      description: Partial update — omit a field to leave it unchanged.
+      properties:
+        title: { type: string, maxLength: 300 }
+        description: { type: string, maxLength: 2000 }
+        startsAt: { type: string, format: date-time }
+        endsAt: { type: string, format: date-time }
+
+    EventResponse:
+      type: object
+      required: [id, title, description, startsAt, endsAt, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        description: { type: string }
+        startsAt: { type: string, format: date-time }
+        endsAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     ApiError:
       type: object
