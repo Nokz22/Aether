@@ -809,6 +809,140 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List events overlapping a time window */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Window start as an instant (ISO-8601, e.g. 2026-08-20T00:00:00Z). */
+                    from: components["parameters"]["RangeFrom"];
+                    /** @description Window end as an instant (ISO-8601). Must be after `from`. */
+                    to: components["parameters"]["RangeTo"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Events overlapping [from, to), earliest first. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventResponse"][];
+                    };
+                };
+                400: components["responses"]["ApiError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        /** Create an event */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateEventRequest"];
+                };
+            };
+            responses: {
+                /** @description Created. */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/{eventId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an event */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    eventId: components["parameters"]["EventId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update an event (partial; omitted fields are left unchanged) */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    eventId: components["parameters"]["EventId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateEventRequest"];
+                };
+            };
+            responses: {
+                /** @description The updated event. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -941,6 +1075,37 @@ export interface components {
             updatedAt: string;
             tasks: components["schemas"]["TaskResponse"][];
         };
+        CreateEventRequest: {
+            title: string;
+            description?: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            endsAt: string;
+        };
+        /** @description Partial update — omit a field to leave it unchanged. */
+        UpdateEventRequest: {
+            title?: string;
+            description?: string;
+            /** Format: date-time */
+            startsAt?: string;
+            /** Format: date-time */
+            endsAt?: string;
+        };
+        EventResponse: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            description: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            endsAt: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         ApiError: {
             /** @description Stable machine-readable code, e.g. invalid_credentials, registration_closed, email_already_used, invalid_refresh_token, validation_failed. */
             code: string;
@@ -972,6 +1137,11 @@ export interface components {
         };
     };
     parameters: {
+        /** @description Window start as an instant (ISO-8601, e.g. 2026-08-20T00:00:00Z). */
+        RangeFrom: string;
+        /** @description Window end as an instant (ISO-8601). Must be after `from`. */
+        RangeTo: string;
+        EventId: string;
         ProjectId: string;
         TaskId: string;
         NoteId: string;
