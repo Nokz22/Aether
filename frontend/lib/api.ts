@@ -48,6 +48,10 @@ export type TaskStatus = components["schemas"]["TaskStatus"];
 export type UpdateProjectRequest = components["schemas"]["UpdateProjectRequest"];
 export type UpdateTaskRequest = components["schemas"]["UpdateTaskRequest"];
 
+export type EventResponse = components["schemas"]["EventResponse"];
+export type CreateEventRequest = components["schemas"]["CreateEventRequest"];
+export type UpdateEventRequest = components["schemas"]["UpdateEventRequest"];
+
 function bearer(accessToken: string): Record<string, string> {
   return { Authorization: `Bearer ${accessToken}` };
 }
@@ -185,6 +189,33 @@ export const projectsApi = {
   },
   removeTask(projectId: string, taskId: string, accessToken: string): Promise<void> {
     return request(`/api/projects/${projectId}/tasks/${taskId}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
+    });
+  },
+};
+
+export const eventsApi = {
+  inRange(fromIso: string, toIso: string, accessToken: string): Promise<EventResponse[]> {
+    const query = new URLSearchParams({ from: fromIso, to: toIso }).toString();
+    return request(`/api/events?${query}`, { headers: bearer(accessToken) });
+  },
+  create(body: CreateEventRequest, accessToken: string): Promise<EventResponse> {
+    return request("/api/events", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  update(eventId: string, body: UpdateEventRequest, accessToken: string): Promise<EventResponse> {
+    return request(`/api/events/${eventId}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  remove(eventId: string, accessToken: string): Promise<void> {
+    return request(`/api/events/${eventId}`, {
       method: "DELETE",
       headers: bearer(accessToken),
     });

@@ -114,5 +114,29 @@
       "doing": "Doing",
       "done": "Done"
     }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week",
+    "newEvent": "New event",
+    "loadError": "Couldn't load your events.",
+    "retry": "Try again",
+    "createAt": "Create event on {day} at {hour}",
+    "createTitle": "New event",
+    "editTitle": "Edit event",
+    "eventTitle": "Title",
+    "eventTitlePlaceholder": "Event title",
+    "description": "Description",
+    "descriptionPlaceholder": "Description (optional)",
+    "start": "Start",
+    "end": "End",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "titleRequired": "A title is required.",
+    "endBeforeStart": "The end must be after the start.",
+    "saveError": "Couldn't save. Try again."
   }
 }

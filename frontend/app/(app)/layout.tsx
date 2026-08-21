@@ -6,11 +6,13 @@ import { TopBar } from "@/features/shell/top-bar";
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <SessionProvider>
-      <div className="flex min-h-dvh">
+      {/* Fixed to the viewport so the content region (main) is the scroller and
+          pages using h-full can bound their own internal scroll areas. */}
+      <div className="flex h-dvh overflow-hidden">
         <Dock />
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar />
-          <main className="flex-1 p-8">{children}</main>
+          <main className="min-h-0 flex-1 overflow-y-auto p-8">{children}</main>
         </div>
       </div>
     </SessionProvider>
