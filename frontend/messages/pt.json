@@ -114,5 +114,29 @@
       "doing": "Em curso",
       "done": "Feito"
     }
+  },
+  "calendar": {
+    "title": "Calendário",
+    "today": "Hoje",
+    "prevWeek": "Semana anterior",
+    "nextWeek": "Semana seguinte",
+    "newEvent": "Novo evento",
+    "loadError": "Não foi possível carregar os eventos.",
+    "retry": "Tentar novamente",
+    "createAt": "Criar evento em {day} às {hour}",
+    "createTitle": "Novo evento",
+    "editTitle": "Editar evento",
+    "eventTitle": "Título",
+    "eventTitlePlaceholder": "Título do evento",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Descrição (opcional)",
+    "start": "Início",
+    "end": "Fim",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Apagar",
+    "titleRequired": "O título é obrigatório.",
+    "endBeforeStart": "O fim tem de ser depois do início.",
+    "saveError": "Não foi possível guardar. Tenta novamente."
   }
 }
