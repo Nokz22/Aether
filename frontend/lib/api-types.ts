@@ -943,6 +943,183 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List transactions in a date range, newest first */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Range start as a local date (YYYY-MM-DD), inclusive. */
+                    from: components["parameters"]["DateFrom"];
+                    /** @description Range end as a local date (YYYY-MM-DD), inclusive. Not before `from`. */
+                    to: components["parameters"]["DateTo"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Transactions in [from, to]. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TransactionResponse"][];
+                    };
+                };
+                400: components["responses"]["ApiError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        /** Create a transaction */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateTransactionRequest"];
+                };
+            };
+            responses: {
+                /** @description Created. */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TransactionResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Income, expense, net and per-category totals for a date range */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Range start as a local date (YYYY-MM-DD), inclusive. */
+                    from: components["parameters"]["DateFrom"];
+                    /** @description Range end as a local date (YYYY-MM-DD), inclusive. Not before `from`. */
+                    to: components["parameters"]["DateTo"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The summary. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TransactionSummary"];
+                    };
+                };
+                400: components["responses"]["ApiError"];
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions/{transactionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a transaction */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    transactionId: components["parameters"]["TransactionId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update a transaction (partial; omitted fields are left unchanged) */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    transactionId: components["parameters"]["TransactionId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateTransactionRequest"];
+                };
+            };
+            responses: {
+                /** @description The updated transaction. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TransactionResponse"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                404: components["responses"]["ApiError"];
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1106,6 +1283,60 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        /** @enum {string} */
+        TransactionType: "INCOME" | "EXPENSE";
+        CreateTransactionRequest: {
+            type: components["schemas"]["TransactionType"];
+            /** Format: int64 */
+            amountCents: number;
+            category?: string;
+            description?: string;
+            /** Format: date */
+            date: string;
+        };
+        /** @description Partial update — omit a field to leave it unchanged. */
+        UpdateTransactionRequest: {
+            type?: components["schemas"]["TransactionType"];
+            /** Format: int64 */
+            amountCents?: number;
+            category?: string;
+            description?: string;
+            /** Format: date */
+            date?: string;
+        };
+        TransactionResponse: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["TransactionType"];
+            /** Format: int64 */
+            amountCents: number;
+            category: string;
+            description: string;
+            /** Format: date */
+            date: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CategoryTotal: {
+            category: string;
+            type: components["schemas"]["TransactionType"];
+            /** Format: int64 */
+            totalCents: number;
+        };
+        TransactionSummary: {
+            /** Format: int64 */
+            incomeCents: number;
+            /** Format: int64 */
+            expenseCents: number;
+            /**
+             * Format: int64
+             * @description income − expense; may be negative
+             */
+            netCents: number;
+            byCategory: components["schemas"]["CategoryTotal"][];
+        };
         ApiError: {
             /** @description Stable machine-readable code, e.g. invalid_credentials, registration_closed, email_already_used, invalid_refresh_token, validation_failed. */
             code: string;
@@ -1137,6 +1368,11 @@ export interface components {
         };
     };
     parameters: {
+        /** @description Range start as a local date (YYYY-MM-DD), inclusive. */
+        DateFrom: string;
+        /** @description Range end as a local date (YYYY-MM-DD), inclusive. Not before `from`. */
+        DateTo: string;
+        TransactionId: string;
         /** @description Window start as an instant (ISO-8601, e.g. 2026-08-20T00:00:00Z). */
         RangeFrom: string;
         /** @description Window end as an instant (ISO-8601). Must be after `from`. */

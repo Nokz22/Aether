@@ -15,6 +15,7 @@ tags:
   - name: notes
   - name: projects
   - name: calendar
+  - name: finances
 
 paths:
   /api/auth/register:
@@ -471,8 +472,113 @@ paths:
         "204": { description: Deleted. }
         "404": { $ref: "#/components/responses/ApiError" }
 
+  /api/transactions:
+    get:
+      tags: [finances]
+      summary: List transactions in a date range, newest first
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/DateFrom"
+        - $ref: "#/components/parameters/DateTo"
+      responses:
+        "200":
+          description: Transactions in [from, to].
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/TransactionResponse" }
+        "400": { $ref: "#/components/responses/ApiError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    post:
+      tags: [finances]
+      summary: Create a transaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateTransactionRequest" }
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TransactionResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+
+  /api/transactions/summary:
+    get:
+      tags: [finances]
+      summary: Income, expense, net and per-category totals for a date range
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/DateFrom"
+        - $ref: "#/components/parameters/DateTo"
+      responses:
+        "200":
+          description: The summary.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TransactionSummary" }
+        "400": { $ref: "#/components/responses/ApiError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+
+  /api/transactions/{transactionId}:
+    patch:
+      tags: [finances]
+      summary: Update a transaction (partial; omitted fields are left unchanged)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/TransactionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateTransactionRequest" }
+      responses:
+        "200":
+          description: The updated transaction.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TransactionResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [finances]
+      summary: Delete a transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/TransactionId"
+      responses:
+        "204": { description: Deleted. }
+        "404": { $ref: "#/components/responses/ApiError" }
+
 components:
   parameters:
+    DateFrom:
+      name: from
+      in: query
+      required: true
+      description: Range start as a local date (YYYY-MM-DD), inclusive.
+      schema: { type: string, format: date }
+    DateTo:
+      name: to
+      in: query
+      required: true
+      description: Range end as a local date (YYYY-MM-DD), inclusive. Not before `from`.
+      schema: { type: string, format: date }
+    TransactionId:
+      name: transactionId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
     RangeFrom:
       name: from
       in: query
@@ -754,6 +860,62 @@ components:
         endsAt: { type: string, format: date-time }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+
+    TransactionType:
+      type: string
+      enum: [INCOME, EXPENSE]
+
+    CreateTransactionRequest:
+      type: object
+      required: [type, amountCents, date]
+      properties:
+        type: { $ref: "#/components/schemas/TransactionType" }
+        amountCents: { type: integer, format: int64, minimum: 1 }
+        category: { type: string, maxLength: 100 }
+        description: { type: string, maxLength: 500 }
+        date: { type: string, format: date }
+
+    UpdateTransactionRequest:
+      type: object
+      description: Partial update — omit a field to leave it unchanged.
+      properties:
+        type: { $ref: "#/components/schemas/TransactionType" }
+        amountCents: { type: integer, format: int64, minimum: 1 }
+        category: { type: string, maxLength: 100 }
+        description: { type: string, maxLength: 500 }
+        date: { type: string, format: date }
+
+    TransactionResponse:
+      type: object
+      required: [id, type, amountCents, category, description, date, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        type: { $ref: "#/components/schemas/TransactionType" }
+        amountCents: { type: integer, format: int64 }
+        category: { type: string }
+        description: { type: string }
+        date: { type: string, format: date }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    CategoryTotal:
+      type: object
+      required: [category, type, totalCents]
+      properties:
+        category: { type: string }
+        type: { $ref: "#/components/schemas/TransactionType" }
+        totalCents: { type: integer, format: int64 }
+
+    TransactionSummary:
+      type: object
+      required: [incomeCents, expenseCents, netCents, byCategory]
+      properties:
+        incomeCents: { type: integer, format: int64 }
+        expenseCents: { type: integer, format: int64 }
+        netCents: { type: integer, format: int64, description: "income − expense; may be negative" }
+        byCategory:
+          type: array
+          items: { $ref: "#/components/schemas/CategoryTotal" }
 
     ApiError:
       type: object
