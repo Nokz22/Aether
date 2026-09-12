@@ -52,6 +52,13 @@ export type EventResponse = components["schemas"]["EventResponse"];
 export type CreateEventRequest = components["schemas"]["CreateEventRequest"];
 export type UpdateEventRequest = components["schemas"]["UpdateEventRequest"];
 
+export type TransactionResponse = components["schemas"]["TransactionResponse"];
+export type TransactionSummary = components["schemas"]["TransactionSummary"];
+export type TransactionType = components["schemas"]["TransactionType"];
+export type CategoryTotal = components["schemas"]["CategoryTotal"];
+export type CreateTransactionRequest = components["schemas"]["CreateTransactionRequest"];
+export type UpdateTransactionRequest = components["schemas"]["UpdateTransactionRequest"];
+
 function bearer(accessToken: string): Record<string, string> {
   return { Authorization: `Bearer ${accessToken}` };
 }
@@ -216,6 +223,41 @@ export const eventsApi = {
   },
   remove(eventId: string, accessToken: string): Promise<void> {
     return request(`/api/events/${eventId}`, {
+      method: "DELETE",
+      headers: bearer(accessToken),
+    });
+  },
+};
+
+export const transactionsApi = {
+  list(from: string, to: string, accessToken: string): Promise<TransactionResponse[]> {
+    const query = new URLSearchParams({ from, to }).toString();
+    return request(`/api/transactions?${query}`, { headers: bearer(accessToken) });
+  },
+  summary(from: string, to: string, accessToken: string): Promise<TransactionSummary> {
+    const query = new URLSearchParams({ from, to }).toString();
+    return request(`/api/transactions/summary?${query}`, { headers: bearer(accessToken) });
+  },
+  create(body: CreateTransactionRequest, accessToken: string): Promise<TransactionResponse> {
+    return request("/api/transactions", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  update(
+    transactionId: string,
+    body: UpdateTransactionRequest,
+    accessToken: string,
+  ): Promise<TransactionResponse> {
+    return request(`/api/transactions/${transactionId}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  remove(transactionId: string, accessToken: string): Promise<void> {
+    return request(`/api/transactions/${transactionId}`, {
       method: "DELETE",
       headers: bearer(accessToken),
     });
