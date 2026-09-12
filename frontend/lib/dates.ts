@@ -34,3 +34,17 @@ export function isSameDay(a: Date, b: Date): boolean {
 export function toDateTimeLocalValue(date: Date): string {
   return `${localDateISO(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
+
+/** Local first day of the given date's month. */
+export function startOfMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+/** Local last day of the given date's month. */
+export function endOfMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+
+export function addMonths(date: Date, months: number): Date {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+}

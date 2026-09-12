@@ -31,7 +31,6 @@
     "habits": "Hábitos",
     "finances": "Finanças",
     "notes": "Notas",
-    "soon": "Em breve",
     "logout": "Terminar sessão"
   },
   "dashboard": {
@@ -137,6 +136,35 @@
     "delete": "Apagar",
     "titleRequired": "O título é obrigatório.",
     "endBeforeStart": "O fim tem de ser depois do início.",
+    "saveError": "Não foi possível guardar. Tenta novamente."
+  },
+  "finances": {
+    "title": "Finanças",
+    "prevMonth": "Mês anterior",
+    "nextMonth": "Mês seguinte",
+    "thisMonth": "Este mês",
+    "newTransaction": "Nova transação",
+    "empty": "Sem transações neste mês.",
+    "loadError": "Não foi possível carregar as finanças.",
+    "retry": "Tentar novamente",
+    "income": "Receita",
+    "expense": "Despesa",
+    "net": "Saldo",
+    "byCategory": "Por categoria",
+    "uncategorized": "Sem categoria",
+    "createTitle": "Nova transação",
+    "editTitle": "Editar transação",
+    "type": "Tipo",
+    "amount": "Montante",
+    "category": "Categoria",
+    "categoryPlaceholder": "ex.: Comida",
+    "date": "Data",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Descrição (opcional)",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Apagar",
+    "amountInvalid": "Indica um montante maior que zero.",
     "saveError": "Não foi possível guardar. Tenta novamente."
   }
 }

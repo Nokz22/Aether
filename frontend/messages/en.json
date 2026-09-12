@@ -31,7 +31,6 @@
     "habits": "Habits",
     "finances": "Finances",
     "notes": "Notes",
-    "soon": "Coming soon",
     "logout": "Sign out"
   },
   "dashboard": {
@@ -137,6 +136,35 @@
     "delete": "Delete",
     "titleRequired": "A title is required.",
     "endBeforeStart": "The end must be after the start.",
+    "saveError": "Couldn't save. Try again."
+  },
+  "finances": {
+    "title": "Finances",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "thisMonth": "This month",
+    "newTransaction": "New transaction",
+    "empty": "No transactions this month.",
+    "loadError": "Couldn't load your finances.",
+    "retry": "Try again",
+    "income": "Income",
+    "expense": "Expense",
+    "net": "Net",
+    "byCategory": "By category",
+    "uncategorized": "Uncategorized",
+    "createTitle": "New transaction",
+    "editTitle": "Edit transaction",
+    "type": "Type",
+    "amount": "Amount",
+    "category": "Category",
+    "categoryPlaceholder": "e.g. Food",
+    "date": "Date",
+    "description": "Description",
+    "descriptionPlaceholder": "Description (optional)",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "amountInvalid": "Enter an amount greater than zero.",
     "saveError": "Couldn't save. Try again."
   }
 }
