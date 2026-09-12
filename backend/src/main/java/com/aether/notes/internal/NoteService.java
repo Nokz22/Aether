@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 class NoteService {
 
-    private static final int PREVIEW_MAX = 140;
-
     private final NoteRepository notes;
 
     NoteService(NoteRepository notes) {
@@ -22,7 +20,7 @@ class NoteService {
     List<NoteSummary> list(UUID userId) {
         return notes.findAllByUserIdOrderByUpdatedAtDesc(userId).stream()
                 .map(note -> new NoteSummary(note.id(), note.title(),
-                        preview(note.content()), note.updatedAt()))
+                        NotePreview.of(note.content()), note.updatedAt()))
                 .toList();
     }
 
@@ -61,13 +59,4 @@ class NoteService {
         return title == null ? "" : title.trim();
     }
 
-    // First non-blank line, trimmed and capped — a label for titleless notes.
-    private static String preview(String content) {
-        return content.lines()
-                .map(String::strip)
-                .filter(line -> !line.isEmpty())
-                .findFirst()
-                .map(line -> line.length() > PREVIEW_MAX ? line.substring(0, PREVIEW_MAX) : line)
-                .orElse("");
-    }
 }
