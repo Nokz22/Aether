@@ -26,3 +26,12 @@ aether:
     open-registration: ${OPEN_REGISTRATION:false}
     access-token-ttl: 15m
     refresh-token-ttl: 30d
+  ai:
+    # No default: the key comes from the environment and is never committed.
+    # Without it the app still boots and only /api/ai/chat refuses.
+    api-key: ${ANTHROPIC_API_KEY:}
+    model: ${AI_MODEL:claude-sonnet-5}
+    base-url: ${AI_BASE_URL:https://api.anthropic.com}
+    max-tokens: 2048
+    # Ceiling on the tool-use round trips for a single message.
+    max-tool-iterations: 5

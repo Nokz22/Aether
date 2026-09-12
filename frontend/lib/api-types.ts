@@ -1120,6 +1120,128 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/ai/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send one message to the assistant and get its reply
+         * @description The assistant may read from and write to the other modules while answering; `toolsUsed` names what it actually carried out. It can never delete anything. Both the message and the reply are stored.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ChatRequest"];
+                };
+            };
+            responses: {
+                /** @description The assistant's reply, already stored. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChatMessage"];
+                    };
+                };
+                400: components["responses"]["ValidationError"];
+                401: components["responses"]["ApiError"];
+                /** @description The model provider failed or returned nothing (`ai_unavailable`). */
+                502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description No API key configured on the server (`ai_not_configured`). */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The stored conversation, oldest first */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description How many of the most recent messages to return (1–200). */
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The tail of the conversation, oldest first. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChatMessage"][];
+                    };
+                };
+                401: components["responses"]["ApiError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Clear the conversation */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Cleared. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["ApiError"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1336,6 +1458,28 @@ export interface components {
              */
             netCents: number;
             byCategory: components["schemas"]["CategoryTotal"][];
+        };
+        ChatRequest: {
+            message: string;
+            /**
+             * Format: date
+             * @description The client's local date — the server never guesses timezones.
+             */
+            today: string;
+            /** @description The client's offset from UTC in minutes, east positive (i.e. `-new Date().getTimezoneOffset()`). */
+            offsetMinutes: number;
+        };
+        /** @enum {string} */
+        ChatRole: "USER" | "ASSISTANT";
+        ChatMessage: {
+            /** Format: uuid */
+            id: string;
+            role: components["schemas"]["ChatRole"];
+            content: string;
+            /** @description Names of the tools the assistant successfully ran for this reply, e.g. create_habit. Empty for anything the user wrote. */
+            toolsUsed: string[];
+            /** Format: date-time */
+            createdAt: string;
         };
         ApiError: {
             /** @description Stable machine-readable code, e.g. invalid_credentials, registration_closed, email_already_used, invalid_refresh_token, validation_failed. */
