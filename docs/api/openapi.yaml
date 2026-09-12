@@ -16,6 +16,7 @@ tags:
   - name: projects
   - name: calendar
   - name: finances
+  - name: ai
 
 paths:
   /api/auth/register:
@@ -560,6 +561,70 @@ paths:
         "204": { description: Deleted. }
         "404": { $ref: "#/components/responses/ApiError" }
 
+  /api/ai/chat:
+    post:
+      tags: [ai]
+      summary: Send one message to the assistant and get its reply
+      description: >
+        The assistant may read from and write to the other modules while
+        answering; `toolsUsed` names what it actually carried out. It can never
+        delete anything. Both the message and the reply are stored.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChatRequest" }
+      responses:
+        "200":
+          description: The assistant's reply, already stored.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChatMessage" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+        "502":
+          description: The model provider failed or returned nothing (`ai_unavailable`).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "503":
+          description: No API key configured on the server (`ai_not_configured`).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/ai/messages:
+    get:
+      tags: [ai]
+      summary: The stored conversation, oldest first
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: How many of the most recent messages to return (1–200).
+          schema: { type: integer, default: 50, minimum: 1, maximum: 200 }
+      responses:
+        "200":
+          description: The tail of the conversation, oldest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ChatMessage" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    delete:
+      tags: [ai]
+      summary: Clear the conversation
+      security:
+        - bearerAuth: []
+      responses:
+        "204": { description: Cleared. }
+        "401": { $ref: "#/components/responses/ApiError" }
+
 components:
   parameters:
     DateFrom:
@@ -916,6 +981,42 @@ components:
         byCategory:
           type: array
           items: { $ref: "#/components/schemas/CategoryTotal" }
+
+    ChatRequest:
+      type: object
+      required: [message, today, offsetMinutes]
+      properties:
+        message: { type: string, minLength: 1, maxLength: 4000 }
+        today:
+          type: string
+          format: date
+          description: The client's local date — the server never guesses timezones.
+        offsetMinutes:
+          type: integer
+          minimum: -840
+          maximum: 840
+          description: >
+            The client's offset from UTC in minutes, east positive
+            (i.e. `-new Date().getTimezoneOffset()`).
+
+    ChatRole:
+      type: string
+      enum: [USER, ASSISTANT]
+
+    ChatMessage:
+      type: object
+      required: [id, role, content, toolsUsed, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        role: { $ref: "#/components/schemas/ChatRole" }
+        content: { type: string }
+        toolsUsed:
+          type: array
+          description: >
+            Names of the tools the assistant successfully ran for this reply,
+            e.g. create_habit. Empty for anything the user wrote.
+          items: { type: string }
+        createdAt: { type: string, format: date-time }
 
     ApiError:
       type: object

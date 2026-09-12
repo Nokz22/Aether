@@ -23,6 +23,22 @@ aether/
 └── docs/       # architecture notes and decision records (ADRs)
 ```
 
+## The assistant
+
+The `ai` module orchestrates the others through their public APIs (ADR-002).
+It can read and write on your behalf — and deliberately cannot delete
+anything.
+
+Its key comes from the environment and is never committed. Without it the
+application still starts and only `POST /api/ai/chat` refuses, with
+`ai_not_configured`:
+
+```bash
+export ANTHROPIC_API_KEY=...   # required for the assistant, nothing else
+export AI_MODEL=claude-sonnet-5             # optional, this is the default
+export AI_BASE_URL=https://api.anthropic.com # optional, this is the default
+```
+
 ## Status
 
 Early foundation — repository scaffolding in progress.
