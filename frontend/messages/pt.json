@@ -31,7 +31,8 @@
     "habits": "Hábitos",
     "finances": "Finanças",
     "notes": "Notas",
-    "logout": "Terminar sessão"
+    "logout": "Terminar sessão",
+    "assistant": "Assistente"
   },
   "dashboard": {
     "greetingMorning": "Bom dia, {name}",
@@ -166,5 +167,38 @@
     "delete": "Apagar",
     "amountInvalid": "Indica um montante maior que zero.",
     "saveError": "Não foi possível guardar. Tenta novamente."
+  },
+  "assistant": {
+    "title": "Assistente",
+    "inputLabel": "Mensagem para o assistente",
+    "placeholder": "Pergunta ou pede algo…",
+    "send": "Enviar",
+    "thinking": "A pensar…",
+    "clear": "Limpar conversa",
+    "confirmClear": "Limpar a conversa?",
+    "confirmYes": "Sim",
+    "confirmNo": "Não",
+    "emptyTitle": "Em que posso ajudar?",
+    "emptyBody": "Vejo os teus hábitos, notas, projetos, calendário e finanças — e posso agir neles. Nunca apago nada.",
+    "suggestions": {
+      "today": "O que falta hoje?",
+      "expense": "Gastei 12,99 no almoço",
+      "plan": "Resume a minha semana"
+    },
+    "disclaimer": "Pode errar. O que fizer fica registado em cada resposta.",
+    "loadError": "Não foi possível carregar a conversa.",
+    "sendError": "Não foi possível responder. Tenta novamente.",
+    "notConfigured": "O assistente não está configurado neste servidor.",
+    "retry": "Tentar novamente",
+    "actions": {
+      "createHabit": "Criou um hábito",
+      "checkInHabit": "Marcou um hábito",
+      "createNote": "Criou uma nota",
+      "createProject": "Criou um projeto",
+      "addTask": "Adicionou uma tarefa",
+      "moveTask": "Moveu uma tarefa",
+      "createEvent": "Criou um evento",
+      "addTransaction": "Registou um movimento"
+    }
   }
 }

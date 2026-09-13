@@ -7,6 +7,15 @@ export function localDateISO(now: Date = new Date()): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
+/**
+ * The user's offset from UTC in minutes, east positive — the opposite sign of
+ * `getTimezoneOffset`. Sent alongside the local date so the server can resolve
+ * "tomorrow at 3pm" without ever guessing a timezone.
+ */
+export function localOffsetMinutes(now: Date = new Date()): number {
+  return -now.getTimezoneOffset();
+}
+
 /** Local midnight of the given day (drops the time component). */
 export function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());

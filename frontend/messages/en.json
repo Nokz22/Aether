@@ -31,7 +31,8 @@
     "habits": "Habits",
     "finances": "Finances",
     "notes": "Notes",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "assistant": "Assistant"
   },
   "dashboard": {
     "greetingMorning": "Good morning, {name}",
@@ -166,5 +167,38 @@
     "delete": "Delete",
     "amountInvalid": "Enter an amount greater than zero.",
     "saveError": "Couldn't save. Try again."
+  },
+  "assistant": {
+    "title": "Assistant",
+    "inputLabel": "Message to the assistant",
+    "placeholder": "Ask or tell me something…",
+    "send": "Send",
+    "thinking": "Thinking…",
+    "clear": "Clear conversation",
+    "confirmClear": "Clear the conversation?",
+    "confirmYes": "Yes",
+    "confirmNo": "No",
+    "emptyTitle": "How can I help?",
+    "emptyBody": "I can see your habits, notes, projects, calendar and money — and act on them. I never delete anything.",
+    "suggestions": {
+      "today": "What's left today?",
+      "expense": "I spent 12.99 on lunch",
+      "plan": "Sum up my week"
+    },
+    "disclaimer": "It can be wrong. Whatever it does is listed under each reply.",
+    "loadError": "Could not load the conversation.",
+    "sendError": "Could not answer. Please try again.",
+    "notConfigured": "The assistant is not configured on this server.",
+    "retry": "Try again",
+    "actions": {
+      "createHabit": "Created a habit",
+      "checkInHabit": "Checked in a habit",
+      "createNote": "Created a note",
+      "createProject": "Created a project",
+      "addTask": "Added a task",
+      "moveTask": "Moved a task",
+      "createEvent": "Created an event",
+      "addTransaction": "Recorded a transaction"
+    }
   }
 }
