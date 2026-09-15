@@ -119,3 +119,20 @@ body {
     animation: none;
   }
 }
+
+/* The assistant thinking: the text breathes rather than spinning. */
+.assistant-thinking {
+  animation: breathe 1.6s var(--ease) infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-thinking {
+    animation: none;
+  }
+}

@@ -59,6 +59,9 @@ export type CategoryTotal = components["schemas"]["CategoryTotal"];
 export type CreateTransactionRequest = components["schemas"]["CreateTransactionRequest"];
 export type UpdateTransactionRequest = components["schemas"]["UpdateTransactionRequest"];
 
+export type ChatMessage = components["schemas"]["ChatMessage"];
+export type ChatRequest = components["schemas"]["ChatRequest"];
+
 function bearer(accessToken: string): Record<string, string> {
   return { Authorization: `Bearer ${accessToken}` };
 }
@@ -226,6 +229,22 @@ export const eventsApi = {
       method: "DELETE",
       headers: bearer(accessToken),
     });
+  },
+};
+
+export const aiApi = {
+  history(accessToken: string): Promise<ChatMessage[]> {
+    return request("/api/ai/messages", { headers: bearer(accessToken) });
+  },
+  chat(body: ChatRequest, accessToken: string): Promise<ChatMessage> {
+    return request("/api/ai/chat", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: bearer(accessToken),
+    });
+  },
+  clear(accessToken: string): Promise<void> {
+    return request("/api/ai/messages", { method: "DELETE", headers: bearer(accessToken) });
   },
 };
 

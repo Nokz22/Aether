@@ -10,11 +10,13 @@ import {
   HomeIcon,
   NoteIcon,
   RepeatIcon,
+  SparkIcon,
   WalletIcon,
 } from "@/components/ui/icons";
 
 const MODULES = [
   { key: "home", href: "/", Icon: HomeIcon },
+  { key: "assistant", href: "/assistant", Icon: SparkIcon },
   { key: "projects", href: "/projects", Icon: FolderIcon },
   { key: "calendar", href: "/calendar", Icon: CalendarIcon },
   { key: "habits", href: "/habits", Icon: RepeatIcon },
