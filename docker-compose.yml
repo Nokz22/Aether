@@ -1,0 +1,52 @@
+# Runs AETHER the way it runs in production: one published port.
+# The browser talks only to `web`, which proxies /api/* to `api` over the
+# internal network — no CORS, and the refresh cookie always travels.
+#
+#   cp .env.example .env   # then fill it in
+#   docker compose up --build
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-aether}
+      POSTGRES_USER: ${DB_USERNAME:-aether}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-aether}
+    volumes:
+      - aether-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-aether} -d ${DB_NAME:-aether}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-aether}
+      DB_USERNAME: ${DB_USERNAME:-aether}
+      DB_PASSWORD: ${DB_PASSWORD:-aether}
+      # No default: an application secret must never come from a committed file.
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET to at least 32 bytes}
+      OPEN_REGISTRATION: ${OPEN_REGISTRATION:-false}
+      # Absent is fine: the app still starts, only the assistant refuses.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-claude-sonnet-5}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.anthropic.com}
+    depends_on:
+      db:
+        condition: service_healthy
+    # Deliberately no published port: the API is reachable only through `web`.
+
+  web:
+    build: ./frontend
+    environment:
+      API_INTERNAL_URL: http://api:8080
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      - api
+
+volumes:
+  aether-db:
