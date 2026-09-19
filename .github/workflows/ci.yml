@@ -68,20 +68,26 @@ jobs:
   stack:
     name: Stack — images & smoke test
     runs-on: ubuntu-latest
+    # Every step runs compose, and compose refuses to read the file without this.
+    env:
+      JWT_SECRET: ci-only-secret-of-at-least-32-bytes-long
     steps:
       - uses: actions/checkout@v4
 
       # Builds both images and runs them together, so the Dockerfiles and the
       # compose wiring are proven here rather than on the day of a deploy.
       - name: Start the stack
-        env:
-          JWT_SECRET: ci-only-secret-of-at-least-32-bytes-long
         run: docker compose up --build --detach
 
-      - name: Wait for the app to answer
+      # Waiting for the app alone is not enough: it answers in seconds while
+      # the API behind it is still starting, and the proxy says 502 meanwhile.
+      # An unauthenticated call is 401 only once the whole chain is up.
+      - name: Wait for the API to answer through the app
         run: |
-          for _ in $(seq 1 60); do
-            if curl -fsS http://localhost:3000/login > /dev/null; then
+          for _ in $(seq 1 90); do
+            status=$(curl -s -o /dev/null -w '%{http_code}' \
+              http://localhost:3000/api/auth/me || true)
+            if [ "$status" = "401" ]; then
               exit 0
             fi
             sleep 2
