@@ -8,8 +8,8 @@ A personal **AI Operating System** — a single, calm, premium interface to run 
 
 ## Stack
 
-- **Backend** — Java 21, Spring Boot 3.x, PostgreSQL, Flyway
-- **Frontend** — Next.js (App Router), TypeScript, Tailwind CSS, Radix UI, Framer Motion, TanStack Query
+- **Backend** — Java 21, Spring Boot 3.x, Spring Modulith, PostgreSQL, Flyway
+- **Frontend** — Next.js (App Router), TypeScript, Tailwind CSS, TanStack Query
 - **Contract** — OpenAPI; the frontend consumes typed clients generated from it
 
 ## Structure
@@ -39,9 +39,31 @@ export AI_MODEL=claude-sonnet-5             # optional, this is the default
 export AI_BASE_URL=https://api.anthropic.com # optional, this is the default
 ```
 
+## Running it
+
+```bash
+cp .env.example .env          # then set JWT_SECRET, and the AI key if you want it
+docker compose up --build
+```
+
+The app is then on <http://localhost:3000>, and that is the **only** published
+port: the API is reachable through it, not beside it. `/api/*` is proxied on to
+the backend over the internal network, so the browser only ever talks to one
+origin — no CORS, and the refresh cookie (`SameSite=Strict`) always travels.
+Deployments keep that shape: one public app, the API private behind it.
+
+Registration is closed by default. To create the first account, start once with
+`OPEN_REGISTRATION=true`, register, then set it back to `false`.
+
+To work on the code instead, run the two sides directly — `mvn spring-boot:run`
+in `backend/` and `npm run dev` in `frontend/`, against a local PostgreSQL. The
+frontend proxies to `http://localhost:8080` unless `API_INTERNAL_URL` says
+otherwise.
+
 ## Status
 
-Early foundation — repository scaffolding in progress.
+The six modules — habits, notes, projects, calendar, finances and the
+assistant — are built, each with its own screen. Next: deployment.
 
 ## Author
 

@@ -6,7 +6,10 @@ export type UserResponse = components["schemas"]["UserResponse"];
 export type RegisterRequest = components["schemas"]["RegisterRequest"];
 export type LoginRequest = components["schemas"]["LoginRequest"];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+// Empty by default: calls go to this app's own origin, where /api/* is proxied
+// on to the backend. Set it only to point the browser at another host — which
+// then needs CORS, and costs the refresh cookie unless it is the same site.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 /** A non-2xx response carrying the backend's typed error body. */
 export class ApiRequestError extends Error {

@@ -64,3 +64,45 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  stack:
+    name: Stack — images & smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Builds both images and runs them together, so the Dockerfiles and the
+      # compose wiring are proven here rather than on the day of a deploy.
+      - name: Start the stack
+        env:
+          JWT_SECRET: ci-only-secret-of-at-least-32-bytes-long
+        run: docker compose up --build --detach
+
+      - name: Wait for the app to answer
+        run: |
+          for _ in $(seq 1 60); do
+            if curl -fsS http://localhost:3000/login > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+
+      # One request exercises the whole chain: the app's own origin, the proxy
+      # to the API, the database lookup, and the typed error coming back.
+      - name: The API answers through the app's own origin
+        run: |
+          status=$(curl -s -o response.json -w '%{http_code}' \
+            -X POST http://localhost:3000/api/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"nobody@aether.app","password":"wrong-password"}')
+          echo "status=$status body=$(cat response.json)"
+          if [ "$status" != "401" ] || ! grep -q invalid_credentials response.json; then
+            docker compose logs
+            exit 1
+          fi
+
+      - name: Stop the stack
+        if: always()
+        run: docker compose down --volumes
